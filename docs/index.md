@@ -12,6 +12,12 @@
 pip install daglib
 ```
 
+Or with optional dependencies
+
+```shell
+pip install "daglib[graphiv]"
+```
+
 # Quickstart
 
 
