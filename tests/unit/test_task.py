@@ -1,12 +1,4 @@
-from functools import partial
-
-from daglib.task import base_proxy, Task
-
-
-def test_base_proxy(function_factory):
-    foo = function_factory["foo"]
-    proxied_foo = partial(base_proxy, foo, "foo")
-    assert proxied_foo() == foo()
+from daglib.task import Task
 
 
 def test_task_init(function_factory):
