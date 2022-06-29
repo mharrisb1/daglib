@@ -1,6 +1,5 @@
 # ⚗️ daglib - Lightweight DAG composition framework
 
-[![MIT](https://img.shields.io/badge/License-MIT-666666.svg)](https://github.com/mharrisb1/daglib/blob/main/LICENSE)
 [![python version](https://img.shields.io/static/v1?label=python&message=3.10&color=blue)](https://www.python.org/downloads/release/python-3100/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy.readthedocs.io/en/stable/)
