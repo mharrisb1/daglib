@@ -4,8 +4,16 @@ version = "0.1.0"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/mharrisb1/daglib"
+homepage = "https://github.com/mharrisb1/daglib"
+documentation = "https://mharrisb1.github.io/daglib/"
 description = "Lightweight DAG composition framework"
 authors = ["Michael Harris <mharris@luabase.com>"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10"
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
