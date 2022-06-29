@@ -2,6 +2,7 @@
 .mypy_cache/
 .pytest_cache/
 .venv/
+dist/
 htmlcov/
 .coverage
 poetry.lock
