@@ -1,14 +1,14 @@
 [flake8]
 ignore = D203
 exclude =
-    .git/,
-    .idea/,
-    .mypy_cache/,
-    .pytest_cache/,
-    .venv/,
-    docs/,
-    htmlcov/,
-    nbs/,
+    .git/
+    .idea/
+    .mypy_cache/
+    .pytest_cache/
+    .venv/
+    docs/
+    htmlcov/
+    nbs/
     tests/
 max-complexity = 10
 max-line-length = 121
