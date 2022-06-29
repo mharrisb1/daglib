@@ -35,7 +35,7 @@ def step_2(step_1a, step_1b):
     return f"{step_1a}, {step_1b}"
 
 
-dag.materialize().compute()
+dag.run()
 ```
 
 
