@@ -145,5 +145,5 @@ class Dag:
         filename: str | None = None,
         format: str | None = None,
         **kwargs: Any,
-    ) -> None:
-        self.materialize(to_step, optimize).visualize(filename, format, **kwargs)
+    ) -> Any:
+        return self.materialize(to_step, optimize).visualize(filename, format, **kwargs)
