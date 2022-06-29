@@ -12,6 +12,7 @@ repos:
     rev: v2.0.0
     hooks:
       - id: flake8
+        exclude: ^tests/
 
   - repo: https://github.com/ambv/black
     rev: 22.3.0
