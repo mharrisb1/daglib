@@ -1,4 +1,4 @@
-<center><h1> ⚗️ daglib - Lightweight DAG composition framework </h1></center>
+# ⚗️ daglib - Lightweight DAG composition framework
 
 [![MIT](https://img.shields.io/badge/License-MIT-666666.svg)](https://github.com/mharrisb1/daglib/blob/main/LICENSE)
 [![python version](https://img.shields.io/static/v1?label=python&message=3.10&color=blue)](https://www.python.org/downloads/release/python-3100/)
