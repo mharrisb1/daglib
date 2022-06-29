@@ -33,6 +33,9 @@ pre-commit = "^2.19.0"
 mypy = "^0.961"
 jupyter = "^1.0.0"
 matplotlib = "^3.5.2"
+Sphinx = "^5.0.2"
+myst-parser = "^0.18.0"
+sphinx-rtd-theme = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -50,8 +53,10 @@ exclude = '''
       | \.mypy_cache
       | \.pytest_cache
       | \.venv
+      | \docs
     )/
 '''
 
 [tool.mypy]
 ignore_missing_imports = true
+exclude = "docs/"
