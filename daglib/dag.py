@@ -134,3 +134,16 @@ class Dag:
         for dag in other:
             self.tasks += dag.tasks
             self.keys += dag.keys
+
+    def run(self, to_step: str | None = None, optimize: bool = False) -> Any:
+        return self.materialize(to_step, optimize).compute()
+
+    def visualize(
+        self,
+        to_step: str | None = None,
+        optimize: bool = False,
+        filename: str | None = None,
+        format: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        self.materialize(to_step, optimize).visualize(filename, format, **kwargs)
