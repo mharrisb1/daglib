@@ -5,16 +5,14 @@
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy.readthedocs.io/en/stable/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
+Lightweight alternative to Airflow, Prefect, and Dagster. Create tasks from standard Python functions with task I/O, dynamic task generation, and much more.
+
+See documentation at https://mharrisb1.github.io/daglib/
+
 # Installation
 
 ```shell
 pip install daglib
-```
-
-Or with optional dependencies
-
-```shell
-pip install "daglib[graphiv]"
 ```
 
 # Quickstart
