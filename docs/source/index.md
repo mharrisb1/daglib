@@ -2,6 +2,8 @@
 
 Created as a lighter alternative to Airflow, Prefect, Dagster and other fully-featured orchestration engines, daglib offers intuitive task creation, task ordering, and task execution for small-to-medium sized workflows.
 
+It can run as a standalone application or be embedded in another application to enable more complex use cases like event-driven workflows, conditional workflows, and more.
+
 ## Features
 
 - Lightweight (meant to be deployed on a single machine)
@@ -9,6 +11,7 @@ Created as a lighter alternative to Airflow, Prefect, Dagster and other fully-fe
 - Task I/O
 - Fully embeddable in any Python application
 - Dynamic task spawning
+- Easy to test
 
 # User Guide
 ```{toctree}

@@ -71,7 +71,8 @@
 <a class="reference external" href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 <a class="reference external" href="https://mypy.readthedocs.io/en/stable/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue.svg" /></a>
 <a class="reference external" href="https://github.com/pre-commit/pre-commit"><img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&amp;logoColor=white" /></a></p>
-<p>Lightweight alternative to Airflow, Prefect, and Dagster. Create tasks from standard Python functions with task I/O, dynamic task generation, and much more.</p>
+<p>daglib is a lightweight alternative to Airflow and other orchestration engines. It is meant to run on a single machine and comes with many great features out of the box like task I/O, dynamic task generation, and simple testing and deployment.</p>
+<p>It can run as a standalone application or be embedded in another application to enable more complex use cases like event-driven workflows, conditional workflows, and more.</p>
 <p>See documentation at https://mharrisb1.github.io/daglib/</p>
 </section>
 <section id="installation">
@@ -82,32 +83,124 @@
 </section>
 <section id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading"></a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">daglib</span> <span class="kn">import</span> <span class="n">Dag</span>
+<p>For this example we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The example calculate team metrics so far in the 2022 F1 season.</p>
+<section id="source-tables">
+<h2>Source Tables<a class="headerlink" href="#source-tables" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Team - Which team the driver belongs too for the season</p></li>
+<li><p>Points - Current total Driver’s World Championship points for each driver for the season</p></li>
+<li><p>Wins - Current number of wins for each driver for the season</p></li>
+<li><p>Podiums - Current number of times the driver finished in the top 3 for the season</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">daglib</span>
 
-<span class="n">dag</span> <span class="o">=</span> <span class="n">Dag</span><span class="p">()</span>
+<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">step_1a</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s2">&quot;Hello&quot;</span>
+<span class="k">def</span> <span class="nf">team</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;team&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">,</span> <span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">],</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">step_1b</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s2">&quot;daglib!&quot;</span>
+<span class="k">def</span> <span class="nf">points</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;points&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">129</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">111</span><span class="p">]</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">wins</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;wins&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">podiums</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;podiums&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">driver_metrics</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">wins</span><span class="p">,</span> <span class="n">podiums</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">team</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wins</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">podiums</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">step_2</span><span class="p">(</span><span class="n">step_1a</span><span class="p">,</span> <span class="n">step_1b</span><span class="p">):</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step_1a</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">step_1b</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">def</span> <span class="nf">team_metrics</span><span class="p">(</span><span class="n">driver_metrics</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">driver_metrics</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;team&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;points&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
 <span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;Hello, daglib!&#39;
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
 </pre></div>
 </div>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>points</th>
+      <th>wins</th>
+      <th>podiums</th>
+    </tr>
+    <tr>
+      <th>team</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Red Bull</th>
+      <td>304</td>
+      <td>7</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>Ferrari</th>
+      <td>228</td>
+      <td>2</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>Mercedes</th>
+      <td>188</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</section>
+<section id="task-graph-visualization">
+<h2>Task Graph Visualization<a class="headerlink" href="#task-graph-visualization" title="Permalink to this heading"></a></h2>
+<p>The DAG we created above will create a task graph that looks like the following</p>
+<p><img alt="task graph" src="https://00f74ba44b9cef42bdc6b9550fa999f19192579012-apidata.googleusercontent.com/download/storage/v1/b/daglib-image-assets/o/example-dag.png?jk=AFshE3Xtl-77nV3svojx6QWO5QbuPyYxXn6IrQSuEoRdQ0wBd0L6uTj5OQ-DTGjHGcb_gXBbJLqwUIVlEVLuB8zVJxRqgLVLA7_A8qA7-OTbQaoFMI4zv4y-tCmUKzGiy8ypB5DWjjKAbCEy_zpIz2IaE16v53cMB0jeWgws6IC0nUijhGmHOGH2qipWrsYgvek8ie_Xv02gy3GqpUpSlT05ynGbVbsuCZhUYChJyGrm0iosnWxBFn4PaewitOgcGRbioBf9knJ5uIokYQNYYLfwbnDQosuqjm4NWki4oZp4zI3Z9I2hMh2gSL-6RxSQ5bb69fX6tb-WaAi9cqV_Fm7kDJ0uWlGUmKOZUYxgwFXXQlgqVNp-mvKIrpNJuGEQsxUwUBCshwNySV_fMPMYHtsF9vIWbCO1Ji6HfUT-MbIfXmPS7gTVyaz2NT7519csHmS8FE22mzS2MMVC8P9vByEpflKh0y0KBHINE5lyBzSolyrh-G9O0g2ui6dsR-R1MNAjSsxfMqdPNhoQdQeLYMaDyi1h0BfExpRoVcr9bni2eStgeZEXQE_HLhX86YMRW6PuWGBCd3YQVsh3yQfgQQWsBjnYhSgPjDksntEjSH2ZID4Vl01PEfs93HvJgvq8iPhKU3WfXh2SfgPm-1e8xzFVLHZmwti5Vr24QXUSlQy_ZgxOSI1d1IYQi0sZHRwwaDiQefcKYBplLqqWIoyyaC7J-W3_HjyScnjkDDdnzG2u_s1GSLPZIqJYpz4rgVkX3NqQwA5CalhX-3JyMFUQjZ8KazY8DxKCn_J6XlelHsDBWgK9vT0e8tVa5xEV7ngv8xZMrGgebKELVpTifFVMs583TQa5uCDWd8nggskQVdVeP5Ut716ksvUGb-C_Lud8pdO4WMHmKE1gLPOlDGscCCEdwO4DJjOGNjQ3JhZJAFFpsu0CRUc_NiXFn3GPlIbD06C6zTxrohdkpM6woOJt6Z68DRDPBlClNx0pIbcuo7W_hf14g35L&amp;isca=1" /></p>
+</section>
 </section>
 
 
