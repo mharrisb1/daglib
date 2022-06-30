@@ -33,6 +33,8 @@ For this example we will create a small ETL pipeline that takes data from four s
 import pandas as pd
 import daglib
 
+pd.set_option("display.notebook_repr_html", False)
+
 dag = daglib.Dag()
 
 
@@ -84,57 +86,11 @@ dag.run()
 
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>points</th>
-      <th>wins</th>
-      <th>podiums</th>
-    </tr>
-    <tr>
-      <th>team</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Red Bull</th>
-      <td>304</td>
-      <td>7</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <th>Ferrari</th>
-      <td>228</td>
-      <td>2</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>Mercedes</th>
-      <td>188</td>
-      <td>0</td>
-      <td>5</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+              points  wins  podiums
+    team
+    Red Bull     304     7       12
+    Ferrari      228     2        9
+    Mercedes     188     0        5
 
 
 
