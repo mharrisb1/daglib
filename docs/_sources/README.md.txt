@@ -19,9 +19,39 @@ See documentation at https://mharrisb1.github.io/daglib/
 pip install daglib
 ```
 
-# Quickstart
+# Create your first DAG
 
-For this example we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The example calculates team metrics so far for the 2022 F1 season.
+
+```python
+import daglib
+
+dag = daglib.Dag()
+
+
+@dag.task()
+def task_1a():
+    return "Hello"
+
+
+@dag.task()
+def task_1b():
+    return "world!"
+
+
+@dag.task(final=True)
+def tassk_2(task_1a, task_1b):
+    print(f"{task_1a}, {task_1b}")
+
+
+dag.run()
+```
+
+    Hello, world!
+
+
+# Beyond the "Hello, world!" example
+
+For a more involved example, we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The data is driver-level information from the current 2022 Formula 1 season. The output will be a pivot table for team-level metrics.
 
 ## Source Tables
 
@@ -35,6 +65,7 @@ For this example we will create a small ETL pipeline that takes data from four s
 import pandas as pd
 import daglib
 
+# Ignore. Used to render the DataFrame correctly in the README
 pd.set_option("display.notebook_repr_html", False)
 
 dag = daglib.Dag()

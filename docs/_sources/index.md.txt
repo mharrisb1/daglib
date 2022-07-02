@@ -13,6 +13,19 @@ It can run as a standalone application or be embedded in another application to 
 - Dynamic task spawning
 - Easy to test
 
+## Use Cases
+
+daglib can be used as a lightweight alternative to almost any use case that other orchestration engines are used for such as:
+
+- ETL/ELT
+- Batch workflows
+- Lightweight ML pipelines
+
+In addition to the common orchestration use cases, daglib unlocks some additional use cases given its ability to be embedded in other applications:
+
+- Event-driven workflows (usually done by invoking a DAG with an API endpoint)
+- Single container workflows using services such as Google Cloud Run Jobs
+
 ## Installation
 
 ```shell
@@ -63,4 +76,5 @@ maxdepth: 2
 
 00_getting_started
 01_types_of_tasks
+02_testing
 ```
