@@ -19,6 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Types of Tasks" href="01_types_of_tasks.html" />
+    <link rel="prev" title="daglib: Lightweight DAG composition framework" href="index.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -36,8 +38,14 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started</a></li>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#register-tasks">Register Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#returning-values">Returning Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#task-i-o">Task I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visualizing-the-dag">Visualizing the DAG</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="01_types_of_tasks.html">Types of Tasks</a></li>
 </ul>
 
@@ -57,7 +65,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Getting Started</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/01_getting_started.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/00_getting_started.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -67,6 +75,8 @@
 
   <section id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading"></a></h1>
+<section id="register-tasks">
+<h2>Register Tasks<a class="headerlink" href="#register-tasks" title="Permalink to this heading"></a></h2>
 <p>You can register any arbitrary Python function as a task by using the task decorator.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
 
@@ -78,7 +88,10 @@
     <span class="k">return</span> <span class="mi">1</span>
 </pre></div>
 </div>
-<p>To return values, you must mark one or more tasks as <code class="docutils literal notranslate"><span class="pre">final</span></code>. This tells the orchestration engine what to return.</p>
+</section>
+<section id="returning-values">
+<h2>Returning Values<a class="headerlink" href="#returning-values" title="Permalink to this heading"></a></h2>
+<p>To return values, you must mark one or more tasks as <code class="docutils literal notranslate"><span class="pre">final</span></code>. This tells the orchestration engine what to return. The tasks in the graph will not be computed/ran unless there is at least one task marked as <code class="docutils literal notranslate"><span class="pre">final</span></code>. So if you have tasks that do not return values you should still mark the last one as <code class="docutils literal notranslate"><span class="pre">final</span></code> to ensure that the tasks run.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
 
 <span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
@@ -106,13 +119,14 @@
     <span class="k">return</span> <span class="mi">1</span>
 
 
+<span class="c1"># Will return 1</span>
 <span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>1
 </pre></div>
 </div>
-<p>You can specify multiple return values by marking more than one task as final. The result from the DAG run will be e tuple of all results.</p>
+<p>You can specify multiple return values by marking more than one task as final. The result from the DAG run will be a tuple of all results.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
 
 <span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
@@ -134,7 +148,27 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(6, 3)
 </pre></div>
 </div>
-<p>You can pass the output of one task to another as adding the name of the task as a argument in the descendant task.</p>
+<p>You can still run tasks that do not return anything (this can be useful for tasks that write data to storage, log something, etc.). The return type of <code class="docutils literal notranslate"><span class="pre">dag.run()</span></code> will be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
+
+<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">task_1</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This returns nothing!&quot;</span><span class="p">)</span>
+
+
+<span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>This returns nothing!
+</pre></div>
+</div>
+</section>
+<section id="task-i-o">
+<h2>Task I/O<a class="headerlink" href="#task-i-o" title="Permalink to this heading"></a></h2>
+<p>daglib supports passing the output(s) of one task as an input to another. You can pass the output of one task to another by adding the name of the task as an argument in the descendant task.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
 
 <span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
@@ -156,7 +190,7 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>18
 </pre></div>
 </div>
-<p>A task can take the outputs of multiple tasks as inputs</p>
+<p>A task can also take the outputs of multiple tasks as inputs</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
 
 <span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
@@ -183,7 +217,10 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>18
 </pre></div>
 </div>
-<p>To visualize the task graph being computed, you can call <code class="docutils literal notranslate"><span class="pre">visualize()</span></code> on the DAG object.</p>
+</section>
+<section id="visualizing-the-dag">
+<h2>Visualizing the DAG<a class="headerlink" href="#visualizing-the-dag" title="Permalink to this heading"></a></h2>
+<p>To visualize the task graph being computed, you can call <code class="docutils literal notranslate"><span class="pre">visualize()</span></code> on the DAG object. Please note that you need to have <code class="docutils literal notranslate"><span class="pre">graphviz</span></code> installed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
 
 <span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
@@ -207,13 +244,17 @@
 <span class="n">dag</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/01_getting_started_12_0.png" /></p>
+<p><img alt="png" src="_images/00_getting_started_14_0.png" /></p>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="daglib: Lightweight DAG composition framework" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="01_types_of_tasks.html" class="btn btn-neutral float-right" title="Types of Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

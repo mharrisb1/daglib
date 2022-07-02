@@ -40,43 +40,49 @@ dag = daglib.Dag()
 
 @dag.task()
 def team():
-    return pd.DataFrame({
-        "driver": ["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
-        "team": ["Red Bull", "Ferrari", "Mercedes", "Red Bull", "Ferrari", "Mercedes"],
-    }).set_index("driver")
+    """Team table"""
+    return pd.DataFrame(dict(
+        driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
+        team=["Red Bull", "Ferrari", "Mercedes", "Red Bull", "Ferrari", "Mercedes"],
+    )).set_index("driver")
 
 
 @dag.task()
 def points():
-    return pd.DataFrame({
-        "driver": ["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
-        "points": [175, 126, 77, 129, 102, 111]
-    }).set_index("driver")
+    """Points table"""
+    return pd.DataFrame(dict(
+        driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
+        points=[175, 126, 77, 129, 102, 111]
+    )).set_index("driver")
 
 
 @dag.task()
 def wins():
-    return pd.DataFrame({
-        "driver": ["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
-        "wins": [6, 2, 0, 1, 0, 0]
-    }).set_index("driver")
+    """Wins table"""
+    return pd.DataFrame(dict(
+        driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
+        wins=[6, 2, 0, 1, 0, 0]
+    )).set_index("driver")
 
 
 @dag.task()
 def podiums():
-    return pd.DataFrame({
-        "driver": ["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
-        "podiums": [7, 4, 2, 5, 5, 3]
-    }).set_index("driver")
+    """Podiums table"""
+    return pd.DataFrame(dict(
+        driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
+        podiums=[7, 4, 2, 5, 5, 3]
+    )).set_index("driver")
 
 
 @dag.task()
 def driver_metrics(team, points, wins, podiums):
+    """Combined driver metrics (points, wins, podiums) with team dimension added"""
     return team.join(points).join(wins).join(podiums)
 
 
 @dag.task(final=True)
 def team_metrics(driver_metrics):
+    """Pivot table by team"""
     return driver_metrics.groupby("team").sum().sort_values("points", ascending=False)
 
 

@@ -13,12 +13,54 @@ It can run as a standalone application or be embedded in another application to 
 - Dynamic task spawning
 - Easy to test
 
+## Installation
+
+```shell
+pip install daglib
+```
+
+For visualizing the DAG to work, you must also specify to install `graphiv` as an extra dependency
+
+```shell
+pip install "daglib[graphiv]"
+```
+
+## Example
+
+
+```python
+import daglib
+
+dag = daglib.Dag()
+
+
+@dag.task()
+def task_1a():
+    return "Hello"
+
+
+@dag.task()
+def task_1b():
+    return "daglib!"
+
+
+@dag.task(final=True)
+def tassk_2(task_1a, task_1b):
+    print(f"{task_1a}, {task_1b}")
+
+
+dag.run()
+```
+
+    Hello, daglib!
+
+
 # User Guide
 ```{toctree}
 ---
 maxdepth: 2
 ---
 
-00_installation
-01_getting_started
+00_getting_started
+01_types_of_tasks
 ```

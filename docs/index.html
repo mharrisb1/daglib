@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="00_installation.html" />
+    <link rel="next" title="Getting Started" href="00_getting_started.html" />
 </head>
 
 <body class="wy-body-for-nav">
@@ -38,8 +38,8 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="00_installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="01_getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_types_of_tasks.html">Types of Tasks</a></li>
 </ul>
 
         </div>
@@ -81,16 +81,64 @@
 <li><p>Easy to test</p></li>
 </ul>
 </section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install daglib
+</pre></div>
+</div>
+<p>For visualizing the DAG to work, you must also specify to install <code class="docutils literal notranslate"><span class="pre">graphiv</span></code> as an extra dependency</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;daglib[graphiv]&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
+
+<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">task_1a</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;Hello&quot;</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">task_1b</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;daglib!&quot;</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">tassk_2</span><span class="p">(</span><span class="n">task_1a</span><span class="p">,</span> <span class="n">task_1b</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">task_1a</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">task_1b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Hello, daglib!
+</pre></div>
+</div>
+</section>
 </section>
 <section id="user-guide">
 <h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="00_installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="00_installation.html#pip">Pip</a></li>
+<li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="00_getting_started.html#register-tasks">Register Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="00_getting_started.html#returning-values">Returning Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="00_getting_started.html#task-i-o">Task I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="00_getting_started.html#visualizing-the-dag">Visualizing the DAG</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="01_getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_types_of_tasks.html">Types of Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="01_types_of_tasks.html#mapping-tasks">Mapping tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_types_of_tasks.html#joining-tasks">Joining tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_types_of_tasks.html#chunked-tasks">Chunked tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_types_of_tasks.html#putting-it-all-together">Putting it all together</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -99,7 +147,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="00_installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="00_getting_started.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

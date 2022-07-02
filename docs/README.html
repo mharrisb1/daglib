@@ -37,8 +37,8 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="00_installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="01_getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_types_of_tasks.html">Types of Tasks</a></li>
 </ul>
 
         </div>
@@ -102,43 +102,49 @@
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">team</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;team&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">,</span> <span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">],</span>
-    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Team table&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="n">team</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">,</span> <span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">],</span>
+    <span class="p">))</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">points</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;points&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">129</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">111</span><span class="p">]</span>
-    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Points table&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="n">points</span><span class="o">=</span><span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">129</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">111</span><span class="p">]</span>
+    <span class="p">))</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">wins</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;wins&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Wins table&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="n">wins</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="p">))</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">podiums</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-        <span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;podiums&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-    <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Podiums table&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
+        <span class="n">podiums</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="p">))</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">driver_metrics</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">wins</span><span class="p">,</span> <span class="n">podiums</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Combined driver metrics (points, wins, podiums) with team dimension added&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">team</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wins</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">podiums</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">team_metrics</span><span class="p">(</span><span class="n">driver_metrics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pivot table by team&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">driver_metrics</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;team&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;points&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
