@@ -53,11 +53,11 @@ class Dag:
         if map_to is None:
             map_to = []
         if joins:
-            raise TaskBuildError("Task cannot have both map_to and joins specified")
+            raise TaskBuildError("Task cannot have both map_to and joins specified. Choose one")
         if result_chunks:
-            raise TaskBuildError
+            raise TaskBuildError("Task cannot have both map_to and result_chunks specified. Choose one")
         if isinstance(map_to, str):
-            map_to = [t.name for t in self.tasks if t.name.split(" ")[0] == map_to]
+            map_to = [t.name for t in self.tasks if t.name.split(" ")[0] == map_to and len(t.name.split(" ")) > 1]
         for i, v in enumerate(map_to):
             self._register_task(fn, v, str(i), final)
 
@@ -69,7 +69,7 @@ class Dag:
         map_to: list[Any] | str | None = None,
     ) -> Task:
         if map_to:
-            raise TaskBuildError
+            raise TaskBuildError("Task cannot have both joins and map_to specified. Choose one")
         joined_tasks = [t.name for t in self.tasks if t.name.split(" ")[0] == joins and len(t.name.split(" ")) > 1]
         return self._register_task(fn, joined_tasks, None, final)
 
@@ -81,17 +81,16 @@ class Dag:
         map_to: list[Any] | str | None = None,
         result_chunks: int | None = None,
     ) -> None:
-        if result_chunks is None:
-            result_chunks = 1
-        if map_to:
-            raise TaskBuildError
-        if joins:
-            task = self._register_joining_task(fn, False, joins, None)
-        else:
-            task = self._register_task(fn)
-        chunk_task = self._register_task(chunk, (task.name, result_chunks), task.name)
-        for n in range(result_chunks):
-            self._register_task(get, (chunk_task.name, n), str(n), final, task.name)
+        if result_chunks is not None:
+            if map_to:
+                raise TaskBuildError("Task cannot have both result_chunks and map_to specified. Choose one")
+            if joins:
+                task = self._register_joining_task(fn, False, joins, None)
+            else:
+                task = self._register_task(fn)
+            chunk_task = self._register_task(chunk, (task.name, result_chunks), task.name)
+            for n in range(result_chunks):
+                self._register_task(get, (chunk_task.name, n), str(n), final, task.name)
 
     def task(
         self,
