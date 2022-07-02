@@ -1,6 +1,8 @@
 # ⚗️ daglib - Lightweight DAG composition framework
 
-[![python version](https://img.shields.io/static/v1?label=python&message=3.10&color=blue)](https://www.python.org/downloads/release/python-3100/)
+[![PyPI version](https://badge.fury.io/py/daglib.svg)](https://badge.fury.io/py/daglib)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/daglib)](https://pypi.org/project/daglib/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/daglib.svg)](https://pypi.org/project/daglib/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy.readthedocs.io/en/stable/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -19,11 +21,11 @@ pip install daglib
 
 # Quickstart
 
-For this example we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The example calculate team metrics so far in the 2022 F1 season.
+For this example we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The example calculates team metrics so far for the 2022 F1 season.
 
 ## Source Tables
 
-1. Team - Which team the driver belongs too for the season
+1. Team - Which team the driver belongs to for the season
 2. Points - Current total Driver's World Championship points for each driver for the season
 3. Wins - Current number of wins for each driver for the season
 4. Podiums - Current number of times the driver finished in the top 3 for the season
@@ -40,7 +42,6 @@ dag = daglib.Dag()
 
 @dag.task()
 def team():
-    """Team table"""
     return pd.DataFrame(dict(
         driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
         team=["Red Bull", "Ferrari", "Mercedes", "Red Bull", "Ferrari", "Mercedes"],
@@ -49,7 +50,6 @@ def team():
 
 @dag.task()
 def points():
-    """Points table"""
     return pd.DataFrame(dict(
         driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
         points=[175, 126, 77, 129, 102, 111]
@@ -58,7 +58,6 @@ def points():
 
 @dag.task()
 def wins():
-    """Wins table"""
     return pd.DataFrame(dict(
         driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
         wins=[6, 2, 0, 1, 0, 0]
@@ -67,7 +66,6 @@ def wins():
 
 @dag.task()
 def podiums():
-    """Podiums table"""
     return pd.DataFrame(dict(
         driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
         podiums=[7, 4, 2, 5, 5, 3]
@@ -76,13 +74,11 @@ def podiums():
 
 @dag.task()
 def driver_metrics(team, points, wins, podiums):
-    """Combined driver metrics (points, wins, podiums) with team dimension added"""
     return team.join(points).join(wins).join(podiums)
 
 
 @dag.task(final=True)
 def team_metrics(driver_metrics):
-    """Pivot table by team"""
     return driver_metrics.groupby("team").sum().sort_values("points", ascending=False)
 
 

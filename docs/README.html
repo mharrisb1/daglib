@@ -67,7 +67,9 @@
 
   <section id="daglib-lightweight-dag-composition-framework">
 <h1>⚗️ daglib - Lightweight DAG composition framework<a class="headerlink" href="#daglib-lightweight-dag-composition-framework" title="Permalink to this heading"></a></h1>
-<p><a class="reference external" href="https://www.python.org/downloads/release/python-3100/"><img alt="python version" src="https://img.shields.io/static/v1?label=python&amp;message=3.10&amp;color=blue" /></a>
+<p><a class="reference external" href="https://badge.fury.io/py/daglib"><img alt="PyPI version" src="https://badge.fury.io/py/daglib.svg" /></a>
+<a class="reference external" href="https://pypi.org/project/daglib/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/daglib" /></a>
+<a class="reference external" href="https://pypi.org/project/daglib/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/daglib.svg" /></a>
 <a class="reference external" href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 <a class="reference external" href="https://mypy.readthedocs.io/en/stable/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue.svg" /></a>
 <a class="reference external" href="https://github.com/pre-commit/pre-commit"><img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&amp;logoColor=white" /></a></p>
@@ -83,11 +85,11 @@
 </section>
 <section id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading"></a></h1>
-<p>For this example we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The example calculate team metrics so far in the 2022 F1 season.</p>
+<p>For this example we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The example calculates team metrics so far for the 2022 F1 season.</p>
 <section id="source-tables">
 <h2>Source Tables<a class="headerlink" href="#source-tables" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p>Team - Which team the driver belongs too for the season</p></li>
+<li><p>Team - Which team the driver belongs to for the season</p></li>
 <li><p>Points - Current total Driver’s World Championship points for each driver for the season</p></li>
 <li><p>Wins - Current number of wins for each driver for the season</p></li>
 <li><p>Podiums - Current number of times the driver finished in the top 3 for the season</p></li>
@@ -102,7 +104,6 @@
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">team</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Team table&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
         <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
         <span class="n">team</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">,</span> <span class="s2">&quot;Red Bull&quot;</span><span class="p">,</span> <span class="s2">&quot;Ferrari&quot;</span><span class="p">,</span> <span class="s2">&quot;Mercedes&quot;</span><span class="p">],</span>
@@ -111,7 +112,6 @@
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">points</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Points table&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
         <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
         <span class="n">points</span><span class="o">=</span><span class="p">[</span><span class="mi">175</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">129</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">111</span><span class="p">]</span>
@@ -120,7 +120,6 @@
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">wins</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Wins table&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
         <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
         <span class="n">wins</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -129,7 +128,6 @@
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">podiums</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Podiums table&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
         <span class="n">driver</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Charles&quot;</span><span class="p">,</span> <span class="s2">&quot;Lewis&quot;</span><span class="p">,</span> <span class="s2">&quot;Sergio&quot;</span><span class="p">,</span> <span class="s2">&quot;Carlos&quot;</span><span class="p">,</span> <span class="s2">&quot;George&quot;</span><span class="p">],</span>
         <span class="n">podiums</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
@@ -138,13 +136,11 @@
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">driver_metrics</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">wins</span><span class="p">,</span> <span class="n">podiums</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Combined driver metrics (points, wins, podiums) with team dimension added&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">team</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wins</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">podiums</span><span class="p">)</span>
 
 
 <span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">team_metrics</span><span class="p">(</span><span class="n">driver_metrics</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pivot table by team&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">driver_metrics</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;team&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;points&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
