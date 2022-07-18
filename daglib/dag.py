@@ -18,7 +18,10 @@ def chunk(arr: Iterable[Any], n: int) -> list[list[Any]]:
 
 
 def get(chunked_arr: list[list[Any]], i: int) -> list[Any]:
-    return chunked_arr[i]
+    try:
+        return chunked_arr[i]
+    except IndexError:
+        return []
 
 
 class Dag:
