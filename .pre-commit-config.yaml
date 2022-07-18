@@ -30,7 +30,7 @@ repos:
     rev: v0.902
     hooks:
       - id: mypy
-        exclude: ^tests/
+        exclude: ^tests/, ^docs/
         args: [ --strict ]
 
   - repo: https://github.com/roy-ht/pre-commit-jupyter
