@@ -20,15 +20,15 @@ def test_dag_init():
     dag = Dag()
     assert dag.name is None
     assert dag.description is None
-    assert dag.tasks == []
-    assert dag.keys == []
+    assert dag._tasks == []
+    assert dag._keys == []
     assert dag.layers == {}
 
     dag = Dag("dag name", "this is a dag description")
     assert dag.name == "dag name"
     assert dag.description == "this is a dag description"
-    assert dag.tasks == []
-    assert dag.keys == []
+    assert dag._tasks == []
+    assert dag._keys == []
     assert dag.layers == {}
 
 
@@ -41,30 +41,30 @@ def test_register_task(function_factory):
     dag._register_task(foo)
     dag._register_task(bar)
     dag._register_task(bazz)
-    assert len(dag.tasks) == 3
+    assert len(dag._tasks) == 3
 
     dag = Dag()
     dag._register_task(bazz, inputs=(1, 2))
-    assert dag.tasks[0].inputs == (1, 2)
+    assert dag._tasks[0].inputs == (1, 2)
 
     dag = Dag()
     dag._register_task(bazz, suffix="0")
-    assert dag.tasks[0].name == "bazz 0"
+    assert dag._tasks[0].name == "bazz 0"
 
     dag = Dag()
     dag._register_task(bazz, final=True)
-    assert dag.keys == ["bazz"]
-    assert dag.tasks[0].inputs == ("foo", "bar")
+    assert dag._keys == ["bazz"]
+    assert dag._tasks[0].inputs == ("foo", "bar")
 
     dag = Dag()
     dag._register_task(bazz, name_override="fizz")
-    assert dag.tasks[0].name == "fizz"
+    assert dag._tasks[0].name == "fizz"
 
     dag = Dag()
     dag._register_task(bazz, inputs=(1, 2), suffix="0", final=True, name_override="fizz")
-    assert dag.tasks[0].name == "fizz 0"
-    assert dag.tasks[0].inputs == (1, 2)
-    assert dag.keys == ["fizz 0"]
+    assert dag._tasks[0].name == "fizz 0"
+    assert dag._tasks[0].inputs == (1, 2)
+    assert dag._keys == ["fizz 0"]
 
 
 def test_register_mapping_task(function_factory):
@@ -73,27 +73,27 @@ def test_register_mapping_task(function_factory):
 
     dag = Dag()
     dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5])
-    assert len(dag.tasks) == 5
-    assert dag.tasks[0].name == "mapper1 0"
-    assert dag.tasks[1].name == "mapper1 1"
-    assert dag.tasks[2].name == "mapper1 2"
-    assert dag.tasks[3].name == "mapper1 3"
-    assert dag.tasks[4].name == "mapper1 4"
+    assert len(dag._tasks) == 5
+    assert dag._tasks[0].name == "mapper1 0"
+    assert dag._tasks[1].name == "mapper1 1"
+    assert dag._tasks[2].name == "mapper1 2"
+    assert dag._tasks[3].name == "mapper1 3"
+    assert dag._tasks[4].name == "mapper1 4"
 
     dag = Dag()
     dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5])
     dag._register_map_to_task(fn=mapper2, map_to="mapper1")
-    assert len(dag.tasks) == 10
-    assert dag.tasks[5].name == "mapper2 0"
-    assert dag.tasks[6].name == "mapper2 1"
-    assert dag.tasks[7].name == "mapper2 2"
-    assert dag.tasks[8].name == "mapper2 3"
-    assert dag.tasks[9].name == "mapper2 4"
+    assert len(dag._tasks) == 10
+    assert dag._tasks[5].name == "mapper2 0"
+    assert dag._tasks[6].name == "mapper2 1"
+    assert dag._tasks[7].name == "mapper2 2"
+    assert dag._tasks[8].name == "mapper2 3"
+    assert dag._tasks[9].name == "mapper2 4"
 
     dag = Dag()
     dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5], final=True)
-    assert len(dag.tasks) == 5
-    assert len(dag.keys) == 5
+    assert len(dag._tasks) == 5
+    assert len(dag._keys) == 5
 
     dag = Dag()
     with pytest.raises(TaskBuildError):
@@ -111,18 +111,18 @@ def test_register_joining_task(function_factory):
     dag = Dag()
     dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5])
     dag._register_joining_task(fn=joining, joins="mapper1")
-    assert len(dag.tasks) == 6
-    assert dag.tasks[5].name == "joining"
-    assert dag.tasks[5].inputs == ("mapper1 0", "mapper1 1", "mapper1 2", "mapper1 3", "mapper1 4")
+    assert len(dag._tasks) == 6
+    assert dag._tasks[5].name == "joining"
+    assert dag._tasks[5].inputs == ("mapper1 0", "mapper1 1", "mapper1 2", "mapper1 3", "mapper1 4")
 
     dag = Dag()
     dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5])
     dag._register_joining_task(fn=joining, joins="mapper1", final=True)
-    assert dag.keys == ["joining"]
+    assert dag._keys == ["joining"]
 
     dag = Dag()
     dag._register_joining_task(fn=joining, joins="mapper1")
-    assert dag.tasks[0].inputs == ()
+    assert dag._tasks[0].inputs == ()
 
     dag = Dag()
     with pytest.raises(TaskBuildError):
@@ -136,16 +136,16 @@ def test_chunked_task(function_factory):
 
     dag = Dag()
     dag._register_chunked_task(fn=chunker, result_chunks=2)
-    assert len(dag.tasks) == 4
-    assert dag.tasks[0].name == "chunker"
-    assert dag.tasks[1].name == "chunk chunker"
-    assert dag.tasks[2].name == "chunker 0"
-    assert dag.tasks[3].name == "chunker 1"
+    assert len(dag._tasks) == 4
+    assert dag._tasks[0].name == "chunker"
+    assert dag._tasks[1].name == "chunk chunker"
+    assert dag._tasks[2].name == "chunker 0"
+    assert dag._tasks[3].name == "chunker 1"
 
     dag = Dag()
     dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5])
     dag._register_chunked_task(fn=chunker, joins="mapper1", result_chunks=2)
-    assert len(dag.tasks) == 9
+    assert len(dag._tasks) == 9
 
     dag = Dag()
     with pytest.raises(TaskBuildError):
@@ -153,7 +153,7 @@ def test_chunked_task(function_factory):
 
     dag = Dag()
     dag._register_chunked_task(fn=chunker, result_chunks=2, final=True)
-    assert dag.keys == ["chunker 0", "chunker 1"]
+    assert dag._keys == ["chunker 0", "chunker 1"]
 
 
 def test_task_wrapper_simple():
@@ -171,7 +171,7 @@ def test_task_wrapper_simple():
     def bazz(foo, bar):
         return foo + bar
 
-    assert len(dag.tasks) == 3
+    assert len(dag._tasks) == 3
 
 
 def test_task_wrapper_complex():
@@ -197,8 +197,8 @@ def test_task_wrapper_complex():
     def joining_final(*chunkers):
         sum(chunkers)
 
-    assert len(dag.tasks) == 18
-    assert dag.keys == ["joining_final"]
+    assert len(dag._tasks) == 18
+    assert dag._keys == ["joining_final"]
 
 
 def test_task_wrapper_invalid_combinations():
@@ -293,8 +293,8 @@ def test_add_subdag():
 
     dag1.add_subdag(dag2)
 
-    assert len(dag1.tasks) == 2
-    assert len(dag1.keys) == 2
+    assert len(dag1._tasks) == 2
+    assert len(dag1._keys) == 2
 
 
 def test_add_subdags_from_iterable():
@@ -318,5 +318,5 @@ def test_add_subdags_from_iterable():
 
     dag1.add_subdag([dag2, dag3])
 
-    assert len(dag1.tasks) == 3
-    assert len(dag1.keys) == 3
+    assert len(dag1._tasks) == 3
+    assert len(dag1._keys) == 3

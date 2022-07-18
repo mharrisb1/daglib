@@ -28,8 +28,8 @@ class Dag:
     def __init__(self, name: str | None = None, description: str | None = None) -> None:
         self.name = name
         self.description = description
-        self.tasks: list[Task] = []
-        self.keys: list[str] = []
+        self._tasks: list[Task] = []
+        self._keys: list[str] = []
 
     def _register_task(
         self,
@@ -40,9 +40,9 @@ class Dag:
         name_override: str | None = None,
     ) -> Task:
         task = Task(fn, inputs, suffix, name_override)
-        self.tasks.append(task)
+        self._tasks.append(task)
         if final:
-            self.keys.append(task.name)
+            self._keys.append(task.name)
         return task
 
     def _register_map_to_task(
@@ -60,7 +60,7 @@ class Dag:
         if result_chunks:
             raise TaskBuildError("Task cannot have both map_to and result_chunks specified. Choose one")
         if isinstance(map_to, str):
-            map_to = [t.name for t in self.tasks if t.name.split(" ")[0] == map_to and len(t.name.split(" ")) > 1]
+            map_to = [t.name for t in self._tasks if t.name.split(" ")[0] == map_to and len(t.name.split(" ")) > 1]
         for i, v in enumerate(map_to):
             self._register_task(fn, v, str(i), final)
 
@@ -73,7 +73,7 @@ class Dag:
     ) -> Task:
         if map_to:
             raise TaskBuildError("Task cannot have both joins and map_to specified. Choose one")
-        joined_tasks = [t.name for t in self.tasks if t.name.split(" ")[0] == joins and len(t.name.split(" ")) > 1]
+        joined_tasks = [t.name for t in self._tasks if t.name.split(" ")[0] == joins and len(t.name.split(" ")) > 1]
         return self._register_task(fn, joined_tasks, None, final)
 
     def _register_chunked_task(
@@ -117,11 +117,11 @@ class Dag:
 
     @property
     def layers(self) -> dict[str, tuple[Any, ...]]:  # pragma: no cover
-        layers = {task.name: tuple([task.fn, *task.inputs]) for task in self.tasks}
+        layers = {task.name: tuple([task.fn, *task.inputs]) for task in self._tasks}
         return layers
 
     def materialize(self, to_step: str | None = None, optimize: bool = False) -> Delayed:
-        keys = self.keys[0] if len(self.keys) == 1 else self.keys
+        keys = self._keys[0] if len(self._keys) == 1 else self._keys
         layers = self.layers
         if to_step:
             keys = to_step
@@ -134,8 +134,8 @@ class Dag:
         if not isinstance(other, Iterable):
             other = [other]
         for dag in other:
-            self.tasks += dag.tasks
-            self.keys += dag.keys
+            self._tasks += dag._tasks
+            self._keys += dag._keys
 
     def run(self, to_step: str | None = None, optimize: bool = False) -> Any:
         return self.materialize(to_step, optimize).compute()
