@@ -97,6 +97,7 @@ class Dag:
 
     def task(
         self,
+        inputs: Any | Iterable[Any] = (),
         final: bool = False,
         joins: str | None = None,
         map_to: list[Any] | str | None = None,
@@ -110,7 +111,7 @@ class Dag:
             if result_chunks:
                 self._register_chunked_task(fn, final, joins, map_to, result_chunks)
             if not any([joins, map_to, result_chunks]):
-                self._register_task(fn, (), None, final)
+                self._register_task(fn, inputs, None, final)
             return fn
 
         return register
