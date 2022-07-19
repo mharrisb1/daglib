@@ -9,7 +9,6 @@ documentation = "https://mharrisb1.github.io/daglib/"
 description = "Lightweight DAG composition framework"
 authors = ["Michael Harris <mharris@luabase.com>"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.10"
