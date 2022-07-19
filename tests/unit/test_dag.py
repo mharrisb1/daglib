@@ -1,7 +1,7 @@
 import pytest
 from dask.delayed import Delayed
 
-from daglib.dag import TaskBuildError, chunk, get, Dag
+from daglib.dag import TaskBuildError, chunk, get, Dag, find_keys
 
 
 def test_chunk():
@@ -14,6 +14,11 @@ def test_get():
     chunked_arr = chunk(arr, 2)
     assert get(chunked_arr, 0) == [1, 2, 3]
     assert get(chunked_arr, 1) == [4, 5, 6]
+
+
+def test_find_keys():
+    layers = {"foo": (1, 2, 3), "foo 1": (1, 2, 3), "foo 2": (1, 2, 3), "bar": ()}
+    assert find_keys("foo", layers) == ["foo 1", "foo 2"]
 
 
 def test_dag_init():
@@ -140,6 +145,10 @@ def test_register_joining_task(function_factory):
 
     dag = Dag()
     dag._register_joining_task(fn=joining, joins="mapper1")
+    assert dag._tasks[0].inputs == ()
+
+    dag = Dag()
+    dag._register_joining_task(fn=joining, joins=mapper1)
     assert dag._tasks[0].inputs == ()
 
     dag = Dag()
@@ -291,6 +300,9 @@ def test_materialize():
 
     assert dag.materialize(to_step="foo")._key == "foo"
     assert list(dag.materialize(to_step="foo")._dask.keys()) == ["foo"]
+
+    assert dag.materialize(to_step=foo)._key == "foo"
+    assert list(dag.materialize(to_step=foo)._dask.keys()) == ["foo"]
 
     assert dag.materialize(optimize=True)._key == "bazz"
     assert sorted(list(dag.materialize(optimize=True)._dask.keys())) == ["bar", "bazz", "foo"]
