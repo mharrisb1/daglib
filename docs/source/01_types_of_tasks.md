@@ -42,8 +42,8 @@ def mapping_task_example(n):
 dag.run()
 ```
 
-    mapping_task_example function running for 1mapping_task_example function running for 2
-
+    mapping_task_example function running for 1
+    mapping_task_example function running for 2
     mapping_task_example function running for 3
     mapping_task_example function running for 4
     mapping_task_example function running for 5
@@ -64,9 +64,9 @@ dag.visualize()
 
 
 
-
+    
 ![png](01_types_of_tasks_files/01_types_of_tasks_6_0.png)
-
+    
 
 
 
@@ -100,9 +100,9 @@ dag.visualize()
 
 
 
-
+    
 ![png](01_types_of_tasks_files/01_types_of_tasks_8_0.png)
-
+    
 
 
 
@@ -145,9 +145,9 @@ dag.visualize()
 
 
 
-
+    
 ![png](01_types_of_tasks_files/01_types_of_tasks_11_0.png)
-
+    
 
 
 
@@ -190,9 +190,9 @@ dag.visualize()
 
 
 
-
+    
 ![png](01_types_of_tasks_files/01_types_of_tasks_14_0.png)
-
+    
 
 
 
@@ -236,9 +236,9 @@ dag.visualize()
 
 
 
-
+    
 ![png](01_types_of_tasks_files/01_types_of_tasks_16_0.png)
-
+    
 
 
 
@@ -278,9 +278,9 @@ dag.visualize()
 
 
 
-
+    
 ![png](01_types_of_tasks_files/01_types_of_tasks_19_0.png)
-
+    
 
 
 
@@ -331,9 +331,9 @@ dag.visualize()
 
 
 
-
+    
 ![png](01_types_of_tasks_files/01_types_of_tasks_23_0.png)
-
+    
 
 
 

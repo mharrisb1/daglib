@@ -120,7 +120,7 @@ dag.run()
 
 
               points  wins  podiums
-    team
+    team                           
     Red Bull     304     7       12
     Ferrari      228     2        9
     Mercedes     188     0        5

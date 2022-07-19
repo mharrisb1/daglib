@@ -211,5 +211,8 @@ dag.visualize()
 
 
 
-
+    
 ![png](00_getting_started_files/00_getting_started_14_0.png)
+    
+
+
