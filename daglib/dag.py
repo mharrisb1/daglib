@@ -24,6 +24,14 @@ def get(chunked_arr: list[list[Any]], i: int) -> list[Any]:
         return []
 
 
+def find_keys(search_str: str, layers: dict[str, tuple[Any, ...]]) -> list[str] | str:
+    keys = list(layers.keys())
+    keys = list(filter(lambda k: k.split(" ")[0] == search_str, keys))
+    if len(keys) > 1:
+        return list(filter(lambda k: len(k.split(" ")) > 1 and "chunk" not in k.split(" "), keys))
+    return keys[0]
+
+
 class Dag:
     def __init__(self, name: str | None = None, description: str | None = None) -> None:
         self.name = name
@@ -131,11 +139,13 @@ class Dag:
         layers = {task.name: tuple([task.fn, *task.inputs]) for task in self._tasks}
         return layers
 
-    def materialize(self, to_step: str | None = None, optimize: bool = False) -> Delayed:
+    def materialize(self, to_step: str | Callable[..., Any] | None = None, optimize: bool = False) -> Delayed:
         keys = self._keys[0] if len(self._keys) == 1 else self._keys
         layers = self.layers
         if to_step:
-            keys = to_step
+            if callable(to_step):
+                to_step = to_step.__name__
+            keys = find_keys(to_step, layers)
             optimize = True
         if optimize:
             layers, _ = cull(layers, keys)
@@ -148,12 +158,12 @@ class Dag:
             self._tasks += dag._tasks
             self._keys += dag._keys
 
-    def run(self, to_step: str | None = None, optimize: bool = False) -> Any:
+    def run(self, to_step: str | Callable[..., Any] | None = None, optimize: bool = False) -> Any:
         return self.materialize(to_step, optimize).compute()
 
     def visualize(
         self,
-        to_step: str | None = None,
+        to_step: str | Callable[..., Any] | None = None,
         optimize: bool = False,
         filename: str | None = None,
         format: str | None = None,
