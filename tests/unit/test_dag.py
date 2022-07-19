@@ -91,6 +91,16 @@ def test_register_mapping_task(function_factory):
     assert dag._tasks[9].name == "mapper2 4"
 
     dag = Dag()
+    dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5])
+    dag._register_map_to_task(fn=mapper2, map_to=mapper1)
+    assert len(dag._tasks) == 10
+    assert dag._tasks[5].name == "mapper2 0"
+    assert dag._tasks[6].name == "mapper2 1"
+    assert dag._tasks[7].name == "mapper2 2"
+    assert dag._tasks[8].name == "mapper2 3"
+    assert dag._tasks[9].name == "mapper2 4"
+
+    dag = Dag()
     dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5], final=True)
     assert len(dag._tasks) == 5
     assert len(dag._keys) == 5

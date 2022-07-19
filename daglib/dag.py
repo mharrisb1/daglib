@@ -50,15 +50,17 @@ class Dag:
         fn: Callable[..., Any],
         final: bool = False,
         joins: str | None = None,
-        map_to: list[Any] | str | None = None,
+        map_to: list[Any] | str | Callable[..., Any] | None = None,
         result_chunks: int | None = None,
     ) -> None:
-        if map_to is None:
+        if not map_to:
             map_to = []
         if joins:
             raise TaskBuildError("Task cannot have both map_to and joins specified. Choose one")
         if result_chunks:
             raise TaskBuildError("Task cannot have both map_to and result_chunks specified. Choose one")
+        if callable(map_to):
+            map_to = map_to.__name__
         if isinstance(map_to, str):
             map_to = [t.name for t in self._tasks if t.name.split(" ")[0] == map_to and len(t.name.split(" ")) > 1]
         for i, v in enumerate(map_to):
@@ -69,7 +71,7 @@ class Dag:
         fn: Callable[..., Any],
         final: bool = False,
         joins: str | None = None,
-        map_to: list[Any] | str | None = None,
+        map_to: list[Any] | str | Callable[..., Any] | None = None,
     ) -> Task:
         if map_to:
             raise TaskBuildError("Task cannot have both joins and map_to specified. Choose one")
@@ -81,7 +83,7 @@ class Dag:
         fn: Callable[..., Any],
         final: bool = False,
         joins: str | None = None,
-        map_to: list[Any] | str | None = None,
+        map_to: list[Any] | str | Callable[..., Any] | None = None,
         result_chunks: int | None = None,
     ) -> None:
         if result_chunks is not None:
@@ -100,7 +102,7 @@ class Dag:
         inputs: Any | Iterable[Any] = (),
         final: bool = False,
         joins: str | None = None,
-        map_to: list[Any] | str | None = None,
+        map_to: list[Any] | str | Callable[..., Any] | None = None,
         result_chunks: int | None = None,
     ) -> Callable[..., Any]:
         def register(fn: Callable[..., Any]) -> Callable[..., Any]:
