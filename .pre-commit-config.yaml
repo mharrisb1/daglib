@@ -4,9 +4,9 @@ repos:
     rev: v2.3.0
     hooks:
       - id: end-of-file-fixer
-        exclude: ^nbs/
+        exclude: ^(nbs/|^docs/)
       - id: trailing-whitespace
-        exclude: ^nbs/
+        exclude: ^(nbs/|^docs/)
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.0.0
@@ -30,7 +30,7 @@ repos:
     rev: v0.902
     hooks:
       - id: mypy
-        exclude: ^tests/
+        exclude: ^(tests/|^docs/)
         args: [ --strict ]
 
   - repo: https://github.com/roy-ht/pre-commit-jupyter

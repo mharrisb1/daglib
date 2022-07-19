@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "daglib"
-version = "0.1.3"
+version = "0.2.0"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/mharrisb1/daglib"
@@ -9,7 +9,6 @@ documentation = "https://mharrisb1.github.io/daglib/"
 description = "Lightweight DAG composition framework"
 authors = ["Michael Harris <mharris@luabase.com>"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.10"
@@ -35,8 +34,8 @@ jupyter = "^1.0.0"
 matplotlib = "^3.5.2"
 Sphinx = "^5.0.2"
 myst-parser = "^0.18.0"
-sphinx-rtd-theme = "^1.0.0"
 pandas = "^1.4.3"
+furo = "^2022.6.21"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
