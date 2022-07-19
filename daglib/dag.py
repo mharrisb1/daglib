@@ -41,11 +41,7 @@ class Dag:
         wait_for: list[Callable[..., Any] | str] | None = None,
     ) -> Task:
         if wait_for:
-            inputs = [*inputs]
-            for t in wait_for:
-                if callable(t):
-                    t = t.__name__
-                inputs.append(t)
+            inputs = [*inputs, *[t.__name__ if callable(t) else t for t in wait_for]]
         task = Task(fn, inputs, suffix, name_override)
         self._tasks.append(task)
         if final:
