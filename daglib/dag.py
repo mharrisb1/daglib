@@ -52,7 +52,7 @@ class Dag:
         self,
         fn: Callable[..., Any],
         final: bool = False,
-        joins: str | None = None,
+        joins: str | Callable[..., Any] | None = None,
         map_to: list[Any] | str | Callable[..., Any] | None = None,
         result_chunks: int | None = None,
         wait_for: list[Callable[..., Any] | str] | None = None,
@@ -74,12 +74,14 @@ class Dag:
         self,
         fn: Callable[..., Any],
         final: bool = False,
-        joins: str | None = None,
+        joins: str | Callable[..., Any] | None = None,
         map_to: list[Any] | str | Callable[..., Any] | None = None,
         wait_for: list[Callable[..., Any] | str] | None = None,
     ) -> Task:
         if map_to:
             raise TaskBuildError("Task cannot have both joins and map_to specified. Choose one")
+        if callable(joins):
+            joins = joins.__name__
         joined_tasks = [t.name for t in self._tasks if t.name.split(" ")[0] == joins and len(t.name.split(" ")) > 1]
         return self._register_task(fn, joined_tasks, None, final, None, wait_for)
 
@@ -87,7 +89,7 @@ class Dag:
         self,
         fn: Callable[..., Any],
         final: bool = False,
-        joins: str | None = None,
+        joins: str | Callable[..., Any] | None = None,
         map_to: list[Any] | str | Callable[..., Any] | None = None,
         result_chunks: int | None = None,
         wait_for: list[Callable[..., Any] | str] | None = None,
@@ -106,7 +108,7 @@ class Dag:
     def task(
         self,
         final: bool = False,
-        joins: str | None = None,
+        joins: str | Callable[..., Any] | None = None,
         map_to: list[Any] | str | Callable[..., Any] | None = None,
         result_chunks: int | None = None,
         wait_for: list[Callable[..., Any] | str] | None = None,

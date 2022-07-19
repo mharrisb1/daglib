@@ -143,6 +143,10 @@ def test_register_joining_task(function_factory):
     assert dag._tasks[0].inputs == ()
 
     dag = Dag()
+    dag._register_joining_task(fn=joining, joins=mapper1)
+    assert dag._tasks[0].inputs == ()
+
+    dag = Dag()
     with pytest.raises(TaskBuildError):
         dag._register_map_to_task(fn=mapper1, map_to=[1, 2, 3, 4, 5])
         dag._register_joining_task(fn=joining, joins="mapper1", map_to="mapper1")
