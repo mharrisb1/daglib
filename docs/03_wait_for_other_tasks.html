@@ -2,9 +2,12 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="#" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Testing" href="02_testing.html" />
 
-    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/><title>Search - daglib  documentation</title><link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
+        <title>Wait for other tasks - daglib documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -145,17 +148,17 @@
   
   <span class="sidebar-brand-text">daglib  documentation</span>
   
-</a><form class="sidebar-search-container" method="get" action="#" role="search">
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="01_types_of_tasks.html">Types of Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03_wait_for_other_tasks.html">Wait for other tasks</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Wait for other tasks</a></li>
 </ul>
 
 </div>
@@ -189,17 +192,37 @@
           </label>
         </div>
         <article role="main">
-          
-<noscript>
-<div class="admonition error">
-  <p class="admonition-title">Error</p>
-  <p>
-    Please activate JavaScript to enable the search functionality.
-  </p>
-</div>
-</noscript>
+          <section id="wait-for-other-tasks">
+<h1>Wait for other tasks<a class="headerlink" href="#wait-for-other-tasks" title="Permalink to this heading">#</a></h1>
+<p>If your task depends on a task finishing but not the output of the task you can use the <code class="docutils literal notranslate"><span class="pre">wait_for</span></code> argument when defining your task.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">daglib</span>
 
-<div id="search-results"></div>
+<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">task_1</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Do this first&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">task_1</span><span class="p">],</span> <span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">task_2</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Then do this&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Do this first
+Then do this
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/03_wait_for_other_tasks_3_0.png" /></p>
+<p>Make not of the <code class="docutils literal notranslate"><span class="pre">*tasks</span></code> argument to the task. This is needed because the name of the task, <code class="docutils literal notranslate"><span class="pre">task_1</span></code> will be passed to <code class="docutils literal notranslate"><span class="pre">task_2</span></code> as an argument and we need to handle this without an error. Future releases of Daglib will deal with this issue.</p>
+</section>
 
         </article>
       </div>
@@ -207,7 +230,17 @@
         
         <div class="related-pages">
           
-          
+          <a class="prev-page" href="02_testing.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Testing</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -240,8 +273,5 @@
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/furo.js"></script>
-    
-<script src="_static/searchtools.js"></script>
-<script src="_static/language_data.js"></script>
-<script src="searchindex.js"></script></body>
+    </body>
 </html>
