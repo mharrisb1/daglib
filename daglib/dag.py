@@ -7,10 +7,7 @@ from dask.delayed import Delayed
 from dask.optimization import cull
 
 from daglib.task import Task
-
-
-class TaskBuildError(Exception):
-    pass
+from daglib.exceptions import TaskBuildError
 
 
 def chunk(arr: Iterable[Any], n: int) -> list[list[Any]]:

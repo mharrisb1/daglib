@@ -1,0 +1,2 @@
+class TaskBuildError(Exception):
+    pass
