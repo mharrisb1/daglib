@@ -27,6 +27,17 @@ def unreliable_task():
 dag.run()
 ```
 
+    Retrying task
+    Retrying task
+    Retrying task
+    Retrying task
+    Retrying task
+    Retrying task
+    Retrying task
+    Retrying task
+    Retrying task
+
+
 
 
 
