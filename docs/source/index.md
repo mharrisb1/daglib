@@ -78,4 +78,5 @@ maxdepth: 2
 01_types_of_tasks
 02_testing
 03_wait_for_other_tasks
+04_retry_tasks
 ```
