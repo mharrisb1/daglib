@@ -1,7 +1,7 @@
 import pytest
 from dask.delayed import Delayed
 
-from daglib import TaskBuildError, chunk, get, Dag, find_keys
+from daglib.dag import TaskBuildError, chunk, get, Dag, find_keys
 
 
 def test_chunk():
@@ -23,14 +23,12 @@ def test_find_keys():
 
 def test_dag_init():
     dag = Dag()
-    assert dag.name is None
-    assert dag.description is None
     assert dag._tasks == []
     assert dag._keys == []
     assert dag.layers == {}
 
     dag = Dag("dag name", "this is a dag description")
-    assert dag.name == "dag name"
+    assert dag.name == "dagname"
     assert dag.description == "this is a dag description"
     assert dag._tasks == []
     assert dag._keys == []
