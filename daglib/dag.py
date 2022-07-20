@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from typing import Any, Callable, Iterable, TypeVar
 
 import numpy as np
@@ -31,10 +32,24 @@ def find_keys(search_str: str, layers: dict[str, tuple[Any, ...]]) -> list[str] 
     return keys[0]
 
 
+def format_dag_name(s: str) -> str:
+    return "".join(x for x in s if x.isalpha()).lower()
+
+
 class Dag:
-    def __init__(self, name: str | None = None, description: str | None = None) -> None:
-        self.name = name
+    def __init__(
+        self,
+        name: str | None = None,
+        description: str = "",
+        profile: bool = False,
+    ) -> None:
+        if not name:
+            name = format_dag_name(str(uuid.uuid4()))
+        self.name = format_dag_name(name)
         self.description = description
+        self.profile = profile
+        self.profile_dir = "meta/profiling/"
+        self.run_id = "run_" + str(uuid.uuid1()).replace("-", "")[:9]
         self._tasks: list[Task] = []
         self._keys: list[str] = []
 
@@ -49,7 +64,9 @@ class Dag:
     ) -> Task:
         if wait_for:
             inputs = [*inputs, *[t.__name__ if callable(t) else t for t in wait_for]]
-        task = Task(fn, inputs, suffix, name_override)
+        task = Task(
+            self.name, self.description, self.run_id, self.profile, self.profile_dir, fn, inputs, suffix, name_override
+        )
         self._tasks.append(task)
         if final:
             self._keys.append(task.name)
