@@ -1,4 +1,4 @@
-from daglib import Task
+from daglib.task import Task
 
 
 def test_task_init(function_factory):
