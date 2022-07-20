@@ -6,32 +6,38 @@ def test_task_init(function_factory):
     bar = function_factory["bar"]
     bazz = function_factory["bazz"]
 
-    task = Task(bar)
+    dag_name = "example_dag"
+    dag_description = "This is an example DAG"
+    run_id = "12345"
+    profile = False
+    profile_dir = "example/path/"
+
+    task = Task(dag_name, dag_description, run_id, profile, profile_dir, bar)
     assert task.fn() == bar()
     assert task.name == "bar"
     assert task.inputs == ()
 
-    task = Task(bazz)
+    task = Task(dag_name, dag_description, run_id, profile, profile_dir, bazz)
     assert task.fn(1, 2) == bazz(1, 2)
     assert task.name == "bazz"
     assert task.inputs == ("foo", "bar")
 
-    task = Task(foo, (0, 1, "foo"))
+    task = Task(dag_name, dag_description, run_id, profile, profile_dir, foo, (0, 1, "foo"))
     assert task.fn() == foo()
     assert task.name == "foo"
     assert task.inputs == (0, 1, "foo")
 
-    task = Task(bazz, (0, 1, "foo"))
+    task = Task(dag_name, dag_description, run_id, profile, profile_dir, bazz, (0, 1, "foo"))
     assert task.fn(1, 2) == bazz(1, 2)
     assert task.name == "bazz"
     assert task.inputs == (0, 1, "foo")
 
-    task = Task(foo, suffix="0")
+    task = Task(dag_name, dag_description, run_id, profile, profile_dir, foo, suffix="0")
     assert task.fn() == foo()
     assert task.name == "foo 0"
     assert task.inputs == ()
 
-    task = Task(foo, name_override="oof")
+    task = Task(dag_name, dag_description, run_id, profile, profile_dir, foo, name_override="oof")
     assert task.fn() == foo()
     assert task.name == "oof"
     assert task.inputs == ()
