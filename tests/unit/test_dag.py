@@ -1,7 +1,7 @@
 import pytest
 from dask.delayed import Delayed
 
-from daglib.dag import TaskBuildError, chunk, get, Dag, find_keys
+from daglib import TaskBuildError, chunk, get, Dag, find_keys
 
 
 def test_chunk():
