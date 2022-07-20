@@ -79,4 +79,5 @@ maxdepth: 2
 02_testing
 03_wait_for_other_tasks
 04_retry_tasks
+05_profiling
 ```
