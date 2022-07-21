@@ -80,4 +80,6 @@ maxdepth: 2
 03_retry_tasks
 04_profiling
 05_assets
+06_additional_task_dependencies
+07_larger_projects
 ```
