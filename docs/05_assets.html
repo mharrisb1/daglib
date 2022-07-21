@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Profiling" href="04_profiling.html" /><link rel="prev" title="Testing" href="02_testing.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Profiling" href="04_profiling.html" />
 
     <link rel="shortcut icon" href="_static/favicon.ico"/><meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
-        <title>Retry Tasks - Daglib documentation</title>
+        <title>Assets - Daglib documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -158,9 +158,9 @@
 <li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="01_types_of_tasks.html">Types of Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_testing.html">Testing</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Retry Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_retry_tasks.html">Retry Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04_profiling.html">Profiling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05_assets.html">Assets</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Assets</a></li>
 </ul>
 
 </div>
@@ -194,83 +194,92 @@
           </label>
         </div>
         <article role="main">
-          <section id="retry-tasks">
-<h1>Retry Tasks<a class="headerlink" href="#retry-tasks" title="Permalink to this heading">#</a></h1>
-<p>To retry tasks, you should use <a class="reference external" href="https://tenacity.readthedocs.io/en/latest/">Tenacity</a>. Make sure that the Tenacity retry decorator is below the Daglib task decorator for the task to be registered correctly.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
-
-<span class="kn">import</span> <span class="nn">daglib</span>
-<span class="kn">import</span> <span class="nn">tenacity</span>
-
-<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
-
-
-<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">()</span>  <span class="c1"># retry forever</span>
-<span class="k">def</span> <span class="nf">unreliable_task</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Retrying task&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Broken sauce, everything is hosed!!!111one&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Awesome sauce!&quot;</span>
+          <section id="assets">
+<h1>Assets<a class="headerlink" href="#assets" title="Permalink to this heading">#</a></h1>
+<p>For retrieving data assets in a repeatable way, you can use define an <code class="docutils literal notranslate"><span class="pre">asset</span></code>. Technically, assets are just minimalistic tasks that accept no inputs. The real benefit to having this subset of tasks as their own object is for project organization.</p>
+<p>An example of using this in the wild could be to have a project layout like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">workflows</span><span class="o">/</span>
+    <span class="o">|</span>
+    <span class="o">|</span><span class="n">__</span> <span class="n">workflow1</span><span class="o">.</span><span class="n">py</span>
+    <span class="o">|</span><span class="n">__</span> <span class="n">workflow2</span><span class="o">.</span><span class="n">py</span>
+<span class="n">assets</span><span class="o">/</span>
+    <span class="o">|</span>
+    <span class="o">|</span><span class="n">__</span> <span class="n">postgres</span><span class="o">.</span><span class="n">py</span>
+    <span class="o">|</span><span class="n">__</span> <span class="n">snowflake</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">daglib</span> <span class="kn">import</span> <span class="n">asset</span><span class="p">,</span> <span class="n">Dag</span>
+
+
+<span class="nd">@asset</span>
+<span class="k">def</span> <span class="nf">table</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>  <span class="c1"># row 1</span>
+        <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>  <span class="c1"># row 2</span>
+        <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>  <span class="c1"># row 3</span>
+        <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>  <span class="c1"># row 4</span>
+        <span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>  <span class="c1"># row 5</span>
+        <span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>  <span class="c1"># row 6</span>
+    <span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
-Retrying task
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag1</span> <span class="o">=</span> <span class="n">Dag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dag1&quot;</span><span class="p">)</span>
+<span class="n">dag1</span><span class="o">.</span><span class="n">add_asset</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 
 
-
-
-
-&#39;Awesome sauce!&#39;
+<span class="nd">@dag1</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">count_rows</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Please see the <a class="reference external" href="https://tenacity.readthedocs.io/en/latest/">Tenacity</a> documentation on usage.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
-
-<span class="kn">import</span> <span class="nn">daglib</span>
-<span class="kn">from</span> <span class="nn">tenacity</span> <span class="kn">import</span> <span class="n">retry</span><span class="p">,</span> <span class="n">stop_after_attempt</span><span class="p">,</span> <span class="n">wait_fixed</span>
-
-<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
-
-
-<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@retry</span><span class="p">(</span><span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait_fixed</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># retry 3 times waiting 1 second between tries</span>
-<span class="k">def</span> <span class="nf">unreliable_task</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Retrying task&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Broken sauce, everything is hosed!!!111one&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Awesome sauce!&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="k">except</span> <span class="n">tenacity</span><span class="o">.</span><span class="n">RetryError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Never succeeded :(&quot;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>6
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Retrying task
-Retrying task
-Retrying task
-Never succeeded :(
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag1</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><img alt="png" src="_images/05_assets_4_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag2</span> <span class="o">=</span> <span class="n">Dag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dag2&quot;</span><span class="p">)</span>
+<span class="n">dag2</span><span class="o">.</span><span class="n">add_asset</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+
+<span class="nd">@dag2</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">count_cols</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>5
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag2</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/05_assets_7_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag3</span> <span class="o">=</span> <span class="n">Dag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dag3&quot;</span><span class="p">)</span>
+<span class="n">dag3</span><span class="o">.</span><span class="n">add_asset</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+
+<span class="nd">@dag3</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_table_shape</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag3</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(6, 5)
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag3</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/05_assets_10_0.png" /></p>
 </section>
 
         </article>
@@ -278,23 +287,15 @@ Never succeeded :(
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="04_profiling.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Profiling</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="02_testing.html">
+          
+          <a class="prev-page" href="04_profiling.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Testing</div>
+                <div class="title">Profiling</div>
                 
               </div>
             </a>
