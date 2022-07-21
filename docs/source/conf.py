@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "daglib"
+project = "Daglib"
 copyright = "2022, Michael Harris"
 author = "Michael Harris"
 
