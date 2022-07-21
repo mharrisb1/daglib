@@ -32,6 +32,8 @@ dag.run()
     Retrying task
     Retrying task
     Retrying task
+    Retrying task
+    Retrying task
 
 
 
