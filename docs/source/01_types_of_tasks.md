@@ -42,8 +42,8 @@ def mapping_task_example(n):
 dag.run()
 ```
 
-    mapping_task_example function running for 1
-    mapping_task_example function running for 2
+    mapping_task_example function running for 1mapping_task_example function running for 2
+    
     mapping_task_example function running for 3
     mapping_task_example function running for 4
     mapping_task_example function running for 5
