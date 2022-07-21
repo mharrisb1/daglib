@@ -52,7 +52,7 @@ list(Path("meta/profiling/").rglob("*.avro"))
 
 
 
-    [PosixPath('meta/profiling/example/run_5a739c740.avro')]
+    [PosixPath('meta/profiling/example/run_257f49220.avro')]
 
 
 
@@ -111,16 +111,16 @@ FROM profiling
       <th>0</th>
       <td>example</td>
       <td>This is an example DAG</td>
-      <td>run_5a739c740</td>
+      <td>run_257f49220</td>
       <td>task_1</td>
       <td>Do some stuff</td>
-      <td>1.005069</td>
+      <td>1.002878</td>
     </tr>
     <tr>
       <th>1</th>
       <td>example</td>
       <td>This is an example DAG</td>
-      <td>run_5a739c740</td>
+      <td>run_257f49220</td>
       <td>task_2</td>
       <td>Do some other stuff</td>
       <td>0.000002</td>
@@ -212,11 +212,11 @@ for _ in range(5):  # create and run the DAG 5 times
     print(dag.run())
 ```
 
-    [4, 14, 27]
-    [9, 20, 12]
-    [10, 2, 18]
-    [7, 16, 21]
-    [6, 12, 30]
+    [2, 12, 18]
+    [10, 10, 6]
+    [8, 6, 3]
+    [1, 8, 21]
+    [9, 20, 27]
 
 
 
@@ -256,7 +256,7 @@ FROM profiling
   <tbody>
     <tr>
       <th>0</th>
-      <td>1.302044</td>
+      <td>1.0021</td>
     </tr>
   </tbody>
 </table>
