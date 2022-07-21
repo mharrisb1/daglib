@@ -8,10 +8,10 @@ from dask.delayed import Delayed
 from dask.optimization import cull
 
 from daglib.core.task import Task
+from daglib.core.assets import Asset
 from daglib.exceptions import TaskBuildError
 
 WrappedFn = TypeVar("WrappedFn", bound=Callable[..., Any])
-Asset = TypeVar("Asset", bound=Task)
 
 
 def chunk(arr: Iterable[Any], n: int) -> list[list[Any]]:
@@ -180,7 +180,8 @@ class Dag:
             self._keys += other._keys
 
     def add_asset(self, asset: Asset) -> None:
-        self._tasks.append(asset)
+        task = Task("", "", "", False, "", asset.fn)
+        self._tasks.append(task)
 
     def run(self, to_step: str | Callable[..., Any] | None = None, optimize: bool = False) -> Any:
         return self.materialize(to_step, optimize).compute()
