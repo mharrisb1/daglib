@@ -69,14 +69,6 @@ def test_register_task(function_factory):
     assert dag._tasks[0].inputs == (1, 2)
     assert dag._keys == ["fizz 0"]
 
-    dag = Dag()
-    dag._register_task(bazz, inputs=(1, 2), wait_for=["foo", "bar"])
-    assert dag._tasks[0].inputs == (1, 2, "foo", "bar")
-
-    dag = Dag()
-    dag._register_task(bazz, inputs=(1, 2), wait_for=[foo, bar])
-    assert dag._tasks[0].inputs == (1, 2, "foo", "bar")
-
 
 def test_register_mapping_task(function_factory):
     mapper1 = function_factory["mapper1"]

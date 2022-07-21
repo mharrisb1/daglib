@@ -60,10 +60,7 @@ class Dag:
         suffix: str | None = None,
         final: bool = False,
         name_override: str | None = None,
-        wait_for: list[WrappedFn | str] | None = None,
     ) -> Task:
-        if wait_for:
-            inputs = [*inputs, *[t.__name__ if callable(t) else t for t in wait_for]]
         task = Task(
             self.name, self.description, self.run_id, self.profile, self.profile_dir, fn, inputs, suffix, name_override
         )
@@ -79,7 +76,6 @@ class Dag:
         joins: str | WrappedFn | None = None,
         map_to: list[Any] | str | WrappedFn | None = None,
         result_chunks: int | None = None,
-        wait_for: list[WrappedFn | str] | None = None,
     ) -> None:
         if not map_to:
             map_to = []
@@ -92,7 +88,7 @@ class Dag:
         if isinstance(map_to, str):
             map_to = [t.name for t in self._tasks if t.name.split(" ")[0] == map_to and len(t.name.split(" ")) > 1]
         for i, v in enumerate(map_to):
-            self._register_task(fn, v, str(i), final, None, wait_for)
+            self._register_task(fn, v, str(i), final, None)
 
     def _register_joining_task(
         self,
@@ -100,14 +96,13 @@ class Dag:
         final: bool = False,
         joins: str | WrappedFn | None = None,
         map_to: list[Any] | str | WrappedFn | None = None,
-        wait_for: list[WrappedFn | str] | None = None,
     ) -> Task:
         if map_to:
             raise TaskBuildError("Task cannot have both joins and map_to specified. Choose one")
         if callable(joins):
             joins = joins.__name__
         joined_tasks = [t.name for t in self._tasks if t.name.split(" ")[0] == joins and len(t.name.split(" ")) > 1]
-        return self._register_task(fn, joined_tasks, None, final, None, wait_for)
+        return self._register_task(fn, joined_tasks, None, final, None)
 
     def _register_chunked_task(
         self,
@@ -116,7 +111,6 @@ class Dag:
         joins: str | WrappedFn | None = None,
         map_to: list[Any] | str | WrappedFn | None = None,
         result_chunks: int | None = None,
-        wait_for: list[WrappedFn | str] | None = None,
     ) -> None:
         if result_chunks is not None:
             if map_to:
@@ -127,7 +121,7 @@ class Dag:
                 task = self._register_task(fn)
             chunk_task = self._register_task(chunk, (task.name, result_chunks), task.name)
             for n in range(result_chunks):
-                self._register_task(get, (chunk_task.name, n), str(n), final, task.name, wait_for)  # type: ignore
+                self._register_task(get, (chunk_task.name, n), str(n), final, task.name)
 
     def task(
         self,
@@ -135,17 +129,16 @@ class Dag:
         joins: str | WrappedFn | None = None,
         map_to: list[Any] | str | WrappedFn | None = None,
         result_chunks: int | None = None,
-        wait_for: list[WrappedFn | str] | None = None,
     ) -> Callable[[WrappedFn], Callable[[WrappedFn], WrappedFn]]:
         def register(fn: WrappedFn) -> WrappedFn:
             if joins and not result_chunks:
-                self._register_joining_task(fn, final, joins, map_to, wait_for)
+                self._register_joining_task(fn, final, joins, map_to)
             if map_to:
-                self._register_map_to_task(fn, final, joins, map_to, result_chunks, wait_for)
+                self._register_map_to_task(fn, final, joins, map_to, result_chunks)
             if result_chunks:
-                self._register_chunked_task(fn, final, joins, map_to, result_chunks, wait_for)
+                self._register_chunked_task(fn, final, joins, map_to, result_chunks)
             if not any([joins, map_to, result_chunks]):
-                self._register_task(fn, (), None, final, None, wait_for)
+                self._register_task(fn, (), None, final, None)
             return fn
 
         return register
