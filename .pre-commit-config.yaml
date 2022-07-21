@@ -4,36 +4,37 @@ repos:
     rev: v2.3.0
     hooks:
       - id: end-of-file-fixer
-        exclude: ^(nbs/|^docs/)
+        exclude: ^(nbs/|docs/)
       - id: trailing-whitespace
-        exclude: ^(nbs/|^docs/)
+        exclude: ^(nbs/|docs/)
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.0.0
     hooks:
       - id: flake8
-        exclude: ^tests/
+        exclude: ^(nbs/|docs/|tests/)
 
   - repo: https://github.com/ambv/black
     rev: 22.3.0
     hooks:
       - id: black
-        args: [ --diff, --check ]
 
   - repo: https://github.com/pre-commit/mirrors-pylint
     rev: v3.0.0a3
     hooks:
       - id: pylint
         args: [ --disable=all, --enable=unused-import ]
+        exclude: ^(nbs/|docs/|tests/)
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.902
     hooks:
       - id: mypy
-        exclude: ^(tests/|^docs/)
+        exclude: ^(nbs/|docs/|tests/)
         args: [ --strict ]
 
   - repo: https://github.com/roy-ht/pre-commit-jupyter
     rev: v1.2.1
     hooks:
       - id: jupyter-notebook-cleanup
+        exclude: ^(docs/|tests/)
