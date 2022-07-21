@@ -2,10 +2,12 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Profiling" href="04_profiling.html" /><link rel="prev" title="Testing" href="02_testing.html" />
 
-    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/><title>Index - daglib documentation</title>
-<link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
+        <title>Retry Tasks - daglib documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -152,11 +154,11 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="00_getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="01_types_of_tasks.html">Types of Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03_retry_tasks.html">Retry Tasks</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Retry Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04_profiling.html">Profiling</a></li>
 </ul>
 
@@ -191,10 +193,72 @@
           </label>
         </div>
         <article role="main">
-          
-<section class="genindex-section">
-  <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"></div>
+          <section id="retry-tasks">
+<h1>Retry Tasks<a class="headerlink" href="#retry-tasks" title="Permalink to this heading">#</a></h1>
+<p>To retry tasks, you should use <a class="reference external" href="https://tenacity.readthedocs.io/en/latest/">Tenacity</a>. Make sure that the Tenacity retry decorator is below the Daglib task decorator for the task to be registered correctly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">daglib</span>
+<span class="kn">import</span> <span class="nn">tenacity</span>
+
+<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">()</span>  <span class="c1"># retry forever</span>
+<span class="k">def</span> <span class="nf">unreliable_task</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Retrying task&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Broken sauce, everything is hosed!!!111one&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Awesome sauce!&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Retrying task
+Retrying task
+Retrying task
+
+
+
+
+
+&#39;Awesome sauce!&#39;
+</pre></div>
+</div>
+<p>Please see the <a class="reference external" href="https://tenacity.readthedocs.io/en/latest/">Tenacity</a> documentation on usage.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">daglib</span>
+<span class="kn">from</span> <span class="nn">tenacity</span> <span class="kn">import</span> <span class="n">retry</span><span class="p">,</span> <span class="n">stop_after_attempt</span><span class="p">,</span> <span class="n">wait_fixed</span>
+
+<span class="n">dag</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">Dag</span><span class="p">()</span>
+
+
+<span class="nd">@dag</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="n">final</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@retry</span><span class="p">(</span><span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait_fixed</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># retry 3 times waiting 1 second between tries</span>
+<span class="k">def</span> <span class="nf">unreliable_task</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Retrying task&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Broken sauce, everything is hosed!!!111one&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Awesome sauce!&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">tenacity</span><span class="o">.</span><span class="n">RetryError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Never succeeded :(&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Retrying task
+Retrying task
+Retrying task
+Never succeeded :(
+</pre></div>
+</div>
 </section>
 
         </article>
@@ -202,8 +266,26 @@
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="04_profiling.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Profiling</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="02_testing.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Testing</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">

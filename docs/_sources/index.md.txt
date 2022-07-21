@@ -77,7 +77,6 @@ maxdepth: 2
 00_getting_started
 01_types_of_tasks
 02_testing
-03_wait_for_other_tasks
-04_retry_tasks
-05_profiling
+03_retry_tasks
+04_profiling
 ```
