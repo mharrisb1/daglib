@@ -1,6 +1,6 @@
 from typing import Any, Iterable, TypeVar, Callable
 
-from daglib.profiling import profiling_wrapper
+from daglib.core.profiling import profiling_wrapper
 
 WrappedFn = TypeVar("WrappedFn", bound=Callable[..., Any])
 

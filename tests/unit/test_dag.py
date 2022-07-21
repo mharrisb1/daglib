@@ -1,7 +1,7 @@
 import pytest
 from dask.delayed import Delayed
 
-from daglib.dag import TaskBuildError, chunk, get, Dag, find_keys
+from daglib.core.dag import TaskBuildError, chunk, get, Dag, find_keys
 
 
 def test_chunk():
@@ -315,28 +315,3 @@ def test_add_subdag():
 
     assert len(dag1._tasks) == 2
     assert len(dag1._keys) == 2
-
-
-def test_add_subdags_from_iterable():
-    dag1 = Dag()
-
-    @dag1.task(final=True)
-    def foo():
-        return 1
-
-    dag2 = Dag()
-
-    @dag2.task(final=True)
-    def bar():
-        return 2
-
-    dag3 = Dag()
-
-    @dag3.task(final=True)
-    def fizz():
-        return 3
-
-    dag1.add_subdag([dag2, dag3])
-
-    assert len(dag1._tasks) == 3
-    assert len(dag1._keys) == 3

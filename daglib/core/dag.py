@@ -7,10 +7,11 @@ import numpy as np
 from dask.delayed import Delayed
 from dask.optimization import cull
 
-from daglib.task import Task
+from daglib.core.task import Task
 from daglib.exceptions import TaskBuildError
 
 WrappedFn = TypeVar("WrappedFn", bound=Callable[..., Any])
+Asset = TypeVar("Asset", bound=Task)
 
 
 def chunk(arr: Iterable[Any], n: int) -> list[list[Any]]:
@@ -160,12 +161,12 @@ class Dag:
             layers, _ = cull(layers, keys)
         return Delayed(keys, layers)
 
-    def add_subdag(self, other: Dag | list[Dag]) -> None:
-        if not isinstance(other, Iterable):
-            other = [other]
-        for dag in other:
-            self._tasks += dag._tasks
-            self._keys += dag._keys
+    def add_subdag(self, other: Dag) -> None:
+        self._tasks += other._tasks
+        self._keys += other._keys
+
+    def add_asset(self, asset: Asset) -> None:
+        self._tasks.append(asset)
 
     def run(self, to_step: str | Callable[..., Any] | None = None, optimize: bool = False) -> Any:
         return self.materialize(to_step, optimize).compute()
