@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Retry Tasks" href="03_retry_tasks.html" />
 
-    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
+    <link rel="shortcut icon" href="_static/favicon.ico"/><meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
         <title>Profiling - daglib documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
@@ -231,7 +231,7 @@
 <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;meta/profiling/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.avro&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[PosixPath(&#39;meta/profiling/example/run_257f49220.avro&#39;)]
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[PosixPath(&#39;meta/profiling/example/run_5d508d060.avro&#39;)]
 </pre></div>
 </div>
 <section id="query-profiling-data">
@@ -282,16 +282,16 @@
       <th>0</th>
       <td>example</td>
       <td>This is an example DAG</td>
-      <td>run_257f49220</td>
+      <td>run_5d508d060</td>
       <td>task_1</td>
       <td>Do some stuff</td>
-      <td>1.002878</td>
+      <td>1.005017</td>
     </tr>
     <tr>
       <th>1</th>
       <td>example</td>
       <td>This is an example DAG</td>
-      <td>run_257f49220</td>
+      <td>run_5d508d060</td>
       <td>task_2</td>
       <td>Do some other stuff</td>
       <td>0.000002</td>
@@ -371,11 +371,11 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">dag</span><span class="o">.</span><span class="n">run</span><span class="p">())</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[2, 12, 18]
-[10, 10, 6]
-[8, 6, 3]
-[1, 8, 21]
-[9, 20, 27]
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[4, 8, 9]
+[9, 4, 15]
+[3, 6, 3]
+[7, 20, 24]
+[5, 16, 21]
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">daglib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">MetaDB</span><span class="p">()</span>
@@ -411,7 +411,7 @@
   <tbody>
     <tr>
       <th>0</th>
-      <td>1.0021</td>
+      <td>1.002517</td>
     </tr>
   </tbody>
 </table>
