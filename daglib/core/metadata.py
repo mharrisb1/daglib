@@ -6,13 +6,7 @@ import pandas as pd
 from fastavro import reader
 
 
-def _delete_folder(p: Path) -> None:
-    for sub in p.iterdir():
-        if sub.is_dir():
-            _delete_folder(sub)
-        else:
-            sub.unlink()
-    p.rmdir()
+from daglib.utils.path import delete_folder
 
 
 class MetaDB:
@@ -49,7 +43,7 @@ class MetaDB:
 
     def drop(self) -> None:
         try:
-            _delete_folder(self._meta_dir)
+            delete_folder(self._meta_dir)
         except FileNotFoundError:
             pass
         self.profiling = self.profiling.head(0)

@@ -79,4 +79,5 @@ maxdepth: 2
 02_testing
 03_retry_tasks
 04_profiling
+05_assets
 ```

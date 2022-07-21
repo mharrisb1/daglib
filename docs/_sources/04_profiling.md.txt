@@ -52,7 +52,7 @@ list(Path("meta/profiling/").rglob("*.avro"))
 
 
 
-    [PosixPath('meta/profiling/example/run_e056481c0.avro')]
+    [PosixPath('meta/profiling/example/run_a2bc128c0.avro')]
 
 
 
@@ -64,9 +64,9 @@ To access profiling records, you can query the `MetaDB`. Profiling records are a
 ```python
 from pathlib import Path
 
-from daglib.metadata import MetaDB
+import daglib
 
-db = MetaDB()
+db = daglib.MetaDB()
 ```
 
 
@@ -111,19 +111,19 @@ FROM profiling
       <th>0</th>
       <td>example</td>
       <td>This is an example DAG</td>
-      <td>run_e056481c0</td>
+      <td>run_a2bc128c0</td>
       <td>task_1</td>
       <td>Do some stuff</td>
-      <td>1.005038</td>
+      <td>1.005059</td>
     </tr>
     <tr>
       <th>1</th>
       <td>example</td>
       <td>This is an example DAG</td>
-      <td>run_e056481c0</td>
+      <td>run_a2bc128c0</td>
       <td>task_2</td>
       <td>Do some other stuff</td>
-      <td>0.000001</td>
+      <td>0.000002</td>
     </tr>
   </tbody>
 </table>
@@ -212,16 +212,16 @@ for _ in range(5):  # create and run the DAG 5 times
     print(dag.run())
 ```
 
-    [3, 4, 18]
-    [4, 2, 12]
-    [10, 8, 18]
-    [4, 2, 30]
-    [5, 2, 9]
+    [9, 10, 27]
+    [5, 14, 9]
+    [9, 6, 6]
+    [3, 8, 6]
+    [7, 8, 30]
 
 
 
 ```python
-db = daglib.metadata.MetaDB()
+db = daglib.MetaDB()
 
 db.query("""
 SELECT AVG(task_runtime) AS avg_task_runtime
@@ -256,7 +256,7 @@ FROM profiling
   <tbody>
     <tr>
       <th>0</th>
-      <td>0.902063</td>
+      <td>1.002518</td>
     </tr>
   </tbody>
 </table>
@@ -267,9 +267,4 @@ FROM profiling
 
 ```python
 db.drop()
-```
-
-
-```python
-
 ```
