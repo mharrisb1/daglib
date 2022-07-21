@@ -311,7 +311,26 @@ def test_add_subdag():
     def bar():
         return 2
 
-    dag1.add_subdag(dag2)
+    dag1.add_subdag(dag2, keep_finals=True)
 
     assert len(dag1._tasks) == 2
     assert len(dag1._keys) == 2
+
+
+def test_add_subdag_keep_finals():
+    dag1 = Dag()
+
+    @dag1.task(final=True)
+    def foo():
+        return 1
+
+    dag2 = Dag()
+
+    @dag2.task(final=True)
+    def bar():
+        return 2
+
+    dag1.add_subdag(dag2, keep_finals=False)
+
+    assert len(dag1._tasks) == 2
+    assert len(dag1._keys) == 1
