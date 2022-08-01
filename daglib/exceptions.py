@@ -1,2 +1,0 @@
-class TaskBuildError(Exception):
-    pass

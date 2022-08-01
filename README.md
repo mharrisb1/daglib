@@ -7,16 +7,22 @@
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy.readthedocs.io/en/stable/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
-Daglib is a lightweight alternative to Airflow and other orchestration engines. It is meant to run on a single machine and comes with many great features out of the box like task I/O, dynamic task generation, and simple testing and deployment.
-
-It can run as a standalone application or be embedded in another application to enable more complex use cases like event-driven workflows, conditional workflows, and more.
-
-See documentation at https://mharrisb1.github.io/daglib/
+Daglib is a lightweight, embeddable parallel task execution library used for turning pure Python functions into executable task graphs.
 
 # Installation
 
+Core
+
 ```shell
 pip install daglib
+```
+
+With visualizations enabled
+
+```shell
+pip install 'daglib[graphviz]'  # static visualizations
+# or
+pip install 'daglib[ipycytoscape]'  # interactive visulizations
 ```
 
 # Create your first DAG
@@ -38,24 +44,28 @@ def task_1b():
     return "world!"
 
 
-@dag.task(final=True)
-def tassk_2(task_1a, task_1b):
-    print(f"{task_1a}, {task_1b}")
+@dag.task()
+def task_2(task_1a, task_1b):
+    return f"{task_1a}, {task_1b}"
 
 
 dag.run()
 ```
 
-    Hello, world!
+
+
+
+    'Hello, world!'
+
 
 
 # Beyond the "Hello, world!" example
 
-For a more involved example, we will create a small ETL pipeline that takes data from four source tables and creates a single reporting table. The data is driver-level information from the current 2022 Formula 1 season. The output will be a pivot table for team-level metrics.
+For a more involved example, we will create a small pipeline that takes data from four source tables and creates a single reporting table. The data is driver-level information from the current 2022 Formula 1 season. The output will be a pivot table for team-level metrics.
 
 ## Source Tables
 
-1. Team - Which team the driver belongs to for the season
+1. Team - Team of driver
 2. Points - Current total Driver's World Championship points for each driver for the season
 3. Wins - Current number of wins for each driver for the season
 4. Podiums - Current number of times the driver finished in the top 3 for the season
@@ -83,7 +93,7 @@ def team():
 def points():
     return pd.DataFrame(dict(
         driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
-        points=[175, 126, 77, 129, 102, 111]
+        points=[258, 178, 146, 173, 156, 158]
     )).set_index("driver")
 
 
@@ -91,7 +101,7 @@ def points():
 def wins():
     return pd.DataFrame(dict(
         driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
-        wins=[6, 2, 0, 1, 0, 0]
+        wins=[8, 3, 0, 1, 1, 0]
     )).set_index("driver")
 
 
@@ -99,7 +109,7 @@ def wins():
 def podiums():
     return pd.DataFrame(dict(
         driver=["Max", "Charles", "Lewis", "Sergio", "Carlos", "George"],
-        podiums=[7, 4, 2, 5, 5, 3]
+        podiums=[10, 5, 6, 6, 6, 5]
     )).set_index("driver")
 
 
@@ -108,7 +118,7 @@ def driver_metrics(team, points, wins, podiums):
     return team.join(points).join(wins).join(podiums)
 
 
-@dag.task(final=True)
+@dag.task()
 def team_metrics(driver_metrics):
     return driver_metrics.groupby("team").sum().sort_values("points", ascending=False)
 
@@ -121,9 +131,9 @@ dag.run()
 
               points  wins  podiums
     team
-    Red Bull     304     7       12
-    Ferrari      228     2        9
-    Mercedes     188     0        5
+    Red Bull     431     9       16
+    Ferrari      334     4       11
+    Mercedes     304     0       11
 
 
 

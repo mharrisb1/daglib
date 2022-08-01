@@ -1,5 +1,3 @@
-from daglib.core.dag import Dag
-from daglib.core.metadata import MetaDB
-from daglib.core.assets import asset
+from .dag import Dag
 
-__version__ = "0.3.2"
+__version__ = "0.4.0"
