@@ -9,8 +9,6 @@
 
 Daglib is a lightweight, embeddable parallel task execution library used for turning pure Python functions into executable task graphs.
 
-See documentation at https://mharrisb1.github.io/daglib/
-
 # Installation
 
 Core
