@@ -22,11 +22,11 @@ class Task:
         fn: Callable[..., Any],
         *,
         name: str,
-        description: str | None,
-        annotations: dict[str, type],
-        return_type: type | None,
-        defaults: tuple[Any, ...],
-        args: list[Arg],
+        description: str | None = "",
+        annotations: dict[str, type] | None = None,
+        return_type: type | None = None,
+        defaults: tuple[Any, ...] = (),
+        args: list[Arg] | None = None,
     ) -> None:
         """
 
@@ -41,10 +41,13 @@ class Task:
         self._fn = fn
         self._name = name
         self._description = description
-        self._annotations = annotations
+        self._annotations = annotations if annotations else {}
         self._return_type = return_type
         self._defaults = defaults
-        self._args = args
+        self._args = args if args else []
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        return self.fn(*args, **kwargs)
 
     @property
     def fn(self) -> Callable[..., Any]:
@@ -135,3 +138,8 @@ class Task:
             defaults=defaults,
             args=args,
         )
+
+    @classmethod
+    def from_object(cls, obj: Any, name: str) -> Task:
+        fn: Callable[[], Any] = lambda: obj
+        return Task.from_function(fn, name)
