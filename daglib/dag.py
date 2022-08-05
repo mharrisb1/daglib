@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 from typing import Any, Callable
 
@@ -18,6 +20,9 @@ class Dag:
     @property
     def run_id(self) -> str:
         return f"run_{uuid.uuid1().hex}"
+
+    def add_subdag(self, other: Dag) -> None:
+        self._tasks_by_name |= other._tasks_by_name
 
     def register_task(self, task: Task) -> Task:
         self._tasks_by_name[task.name] = task
