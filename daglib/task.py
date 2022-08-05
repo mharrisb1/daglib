@@ -1,6 +1,6 @@
 from __future__ import annotations as _annotations  # avoids name conflict with constructor arg
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Callable
 
 
@@ -10,8 +10,8 @@ class Arg:
     with a name, type, and default value."""
 
     name: str
-    type: type | None
-    default: Any | None
+    type: type | None = field(default=None)
+    default: Any | None = field(default=None)
 
 
 class Task:
